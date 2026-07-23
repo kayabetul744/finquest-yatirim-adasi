@@ -1,0 +1,39 @@
+.investment-tip
+
+    --max-width @css{ min(480px, calc(100% - 48px)) }
+
+    position absolute
+    top 90px
+    left 50%
+    max-width var(--max-width)
+    padding 18px 26px
+    background #ffffff
+    border-radius 16px
+    box-shadow 0 10px 40px rgba(0, 0, 0, 0.35)
+    color #2b2333
+    font-family "Nunito", sans-serif
+    font-size 17px
+    font-weight 700
+    line-height 1.45em
+    text-align center
+    pointer-events none
+    -webkit-user-select none
+    -moz-user-select none
+    user-select none
+    opacity 0
+    transform translate(-50%, -10px)
+    transition opacity 0.5s ease, transform 0.5s ease
+    z-index 5
+
+    &.is-visible
+        opacity 1
+        transform translate(-50%, 0)
+
+    .label
+        display block
+        color #c98a1a
+        font-family "Amatic SC", sans-serif
+        font-weight 700
+        font-size 26px
+        line-height 1em
+        margin-bottom 6px
