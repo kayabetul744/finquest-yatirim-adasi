@@ -57,6 +57,10 @@ export class LandingArea extends Area
 
     setWelcomeSign(position)
     {
+        // Guard against a non-finite average (e.g. missing letters) so the mesh never gets NaN transforms
+        if(!isFinite(position.x) || !isFinite(position.y) || !isFinite(position.z))
+            position = this.center ? this.center.clone() : new THREE.Vector3()
+
         // Code-only replacement sign for the hidden letter sculpture (no 3D modeling needed)
         const textCanvas = new TextCanvas('Amatic SC', '700', 130, 900, 200, 2, 'center', 1)
         textCanvas.updateText('YATIRIM ADASI')
@@ -68,13 +72,14 @@ export class LandingArea extends Area
 
         const geometry = new THREE.PlaneGeometry(8, 1.8)
 
-        const material = new THREE.MeshBasicNodeMaterial({
-            alphaTest: 0.5,
-            alphaMap: textCanvas.texture,
-            transparent: true,
-            side: THREE.FrontSide
-        })
-        material.outputNode = vec4(color('#ffd76a'), 1)
+        // Clean alpha-tested material (NOT transparent): golden color, with the text canvas'
+        // red channel as the alpha mask. Rendering alpha-tested/opaque avoids the transparent
+        // render pass, whose mixed alphaMap+outputNode setup produced a zero-size uniform buffer
+        // that crashed WebGPU draw calls on some GPUs (navy screen).
+        const material = new THREE.MeshBasicNodeMaterial({ side: THREE.FrontSide })
+        material.colorNode = color('#ffd76a')
+        material.opacityNode = texture(textCanvas.texture).r
+        material.alphaTest = 0.5
 
         // Two back-to-back planes so the text reads correctly from either approach direction
         // (a single double-sided plane would show mirrored text from the back)
