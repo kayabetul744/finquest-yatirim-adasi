@@ -37,10 +37,14 @@ export class Rendering
 
     async setRenderer()
     {
+        // WebGL'i zorla: WebGPU render motoru yeni ve GPU sürücülerine karşı hassas;
+        // bazı makinelerde production build'de çizim doğrulamasını geçemeyip lacivert
+        // ekrana yol açıyordu. WebGL çok daha olgun ve tüm GPU'larda güvenilir çalışıyor.
+        // (Oyun TSL sayesinde her iki motoru da destekliyor.)
         this.renderer = new THREE.WebGPURenderer({
             canvas: this.game.canvasElement,
             powerPreference: 'high-performance',
-            forceWebGL: false,
+            forceWebGL: true,
             antialias: this.game.viewport.pixelRatio < 2
         })
         this.renderer.setSize(this.game.viewport.width, this.game.viewport.height)
