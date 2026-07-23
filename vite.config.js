@@ -20,7 +20,20 @@ export default {
     {
         outDir: '../dist', // Output in the dist/ folder
         emptyOutDir: true, // Empty the folder first
-        sourcemap: false // Add sourcemap
+        sourcemap: false, // Add sourcemap
+        // Three.js WebGPU/TSL, çalışma anında sınıf/fonksiyon isimlerine güvenir.
+        // Minification bu isimleri bozunca bazı GPU'larda shader derlemesi başarısız olup
+        // lacivert/siyah ekrana yol açıyor. İsimleri koruyarak bunu engelliyoruz.
+        minify: 'terser',
+        terserOptions:
+        {
+            keep_classnames: true,
+            keep_fnames: true
+        }
+    },
+    esbuild:
+    {
+        keepNames: true
     },
     plugins:
     [
